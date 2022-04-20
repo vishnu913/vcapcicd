@@ -15,7 +15,8 @@
     "@sap/xssec": "^3",
     "passport": "^0.4.1",
     "debug": "^4.3",
-    "express": "^4"
+    "express": "^4",
+    "hdb": "^0.18.3"
   },
   "devDependencies": {
     "sqlite3": "^5"
@@ -53,7 +54,13 @@
             }
           }
         }
+      },
+      "db": {
+        "kind": "sql"
       }
+    },
+    "hana": {
+      "deploy-format": "hdbtable"
     }
   }
 }

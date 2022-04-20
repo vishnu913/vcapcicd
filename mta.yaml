@@ -16,7 +16,7 @@ modules:
 
   # --------------------- SERVER MODULE ------------------------
   - name: vcapcicd-srv
-  # ------------------------------------------------------------
+    # ------------------------------------------------------------
     type: nodejs
     path: gen/srv
     parameters:
@@ -25,16 +25,15 @@ modules:
       disk-quota: 1024M
     requires:
       - name: vcapcicd-uaa
+      - name: vcapcicd-db
     provides:
       - name: srv-api
         properties:
           srv-url: ${default-url}
 
-
-
   # ------------------ APP ROUTER MODULE -----------------------
   - name: vcapcicd
-  # ------------------------------------------------------------
+    # ------------------------------------------------------------
     type: approuter.nodejs
     path: app
     parameters:
@@ -50,22 +49,28 @@ modules:
           timeout: 60000
           forwardAuthToken: true
 
+  - name: vcapcicd-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: vcapcicd-db
 
 resources:
   # ----------------------- UAA SERVICE ------------------------
   - name: vcapcicd-uaa
-  # ------------------------------------------------------------
+    # ------------------------------------------------------------
     type: org.cloudfoundry.managed-service
     parameters:
       service: xsuaa
       service-plan: application
       path: ./xs-security.json
 
-
-
-
-
-
-
-
-
+  - name: vcapcicd-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana # or 'hanatrial' on trial landscapes
+      service-plan: hdi-shared
+    properties:
+      hdi-service-name: ${service-name}
